@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-900 min-h-screen flex items-center justify-center p-4">
+    <div class="calculator rounded-2xl p-6 w-full max-w-md">
+        <div class="mb-6">
+            <div class="text-white text-right text-2xl mb-1 h-6">
+                <span id="previous-operand" class="opacity-70"></span>
+            </div>
+            <div class="display bg-gray-800 rounded-lg p-4">
+                <div id="current-operand" class="neon-text text-white text-right text-4xl font-light">0</div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-4 gap-3">
+            <!-- First Row -->
+            <button onclick="clearAll()" class="neon-btn bg-red-600 hover:bg-red-700 text-white rounded-lg p-4 text-xl font-medium">
+                AC
+            </button>
+            <button onclick="deleteLastChar()" class="neon-btn bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-4 text-xl font-medium">
+                <i class="fas fa-backspace"></i>
+            </button>
+            <button onclick="appendOperator('%')" class="neon-btn bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-4 text-xl font-medium">
+                %
+            </button>
+            <button onclick="appendOperator('/')" class="neon-btn bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-4 text-xl font-medium">
+                ÷
+            </button>
+            
+            <!-- Second Row -->
+            <button onclick="appendNumber('7')" class="neon-btn bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-4 text-xl font-medium">
+                7
+            </button>
+            <button onclick="appendNumber('8')" class="neon-btn bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-4 text-xl font-medium">
+                8
+            </button>
+            <button onclick="appendNumber('9')" class="neon-btn bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-4 text-xl font-medium">
+                9
+            </button>
+            <button onclick="appendOperator('*')" class="neon-btn bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-4 text-xl font-medium">
+                ×
+            </button>
+            
+            <!-- Third Row -->
+            <button onclick="appendNumber('4')" class="neon-btn bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-4 text-xl font-medium">
+                4
+            </button>
+            <button onclick="appendNumber('5')" class="neon-btn bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-4 text-xl font-medium">
+                5
+            </button>
+            <button onclick="appendNumber('6')" class="neon-btn bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-4 text-xl font-medium">
+                6
+            </button>
+            <button onclick="appendOperator('-')" class="neon-btn bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-4 text-xl font-medium">
+                -
+            </button>
+            
+            <!-- Fourth Row -->
+            <button onclick="appendNumber('1')" class="neon-btn bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-4 text-xl font-medium">
+                1
+            </button>
+            <button onclick="appendNumber('2')" class="neon-btn bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-4 text-xl font-medium">
+                2
+            </button>
+            <button onclick="appendNumber('3')" class="neon-btn bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-4 text-xl font-medium">
+                3
+            </button>
+            <button onclick="appendOperator('+')" class="neon-btn bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-4 text-xl font-medium">
+                +
+            </button>
+            
+            <!-- Fifth Row -->
+            <button onclick="toggleSign()" class="neon-btn bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-4 text-xl font-medium">
+                +/-
+            </button>
+            <button onclick="appendNumber('0')" class="neon-btn bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-4 text-xl font-medium">
+                0
+            </button>
+            <button onclick="appendNumber('.')" class="neon-btn bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-4 text-xl font-medium">
+                .
+            </button>
+            <button onclick="calculate()" class="neon-btn bg-green-600 hover:bg-green-700 text-white rounded-lg p-4 text-xl font-medium">
+                =
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentOperand = '0';
+        let previousOperand = '';
+        let operation = null;
+        let resetScreen = false;
+
+        const currentOperandElement = document.getElementById('current-operand');
+        const previousOperandElement = document.getElementById('previous-operand');
+
+        function updateDisplay() {
+            currentOperandElement.innerText = currentOperand;
+            if (operation != null) {
+                previousOperandElement.innerText = `${previousOperand} ${operation}`;
+            } else {
+                previousOperandElement.innerText = '';
+            }
+        }
+
+        function appendNumber(number) {
+            if (currentOperand === '0' || resetScreen) {
+                currentOperand = number;
+                resetScreen = false;
+            } else {
+                currentOperand += number;
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (operation !== null) calculate();
+            operation = op;
+            previousOperand = currentOperand;
+            resetScreen = true;
+            updateDisplay();
+        }
+
+        function calculate() {
+            let computation;
+            const prev = parseFloat(previousOperand);
+            const current = parseFloat(currentOperand);
+            
+            if (isNaN(prev) || isNaN(current)) return;
+            
+            switch (operation) {
+                case '+':
+                    computation = prev + current;
+                    break;
+                case '-':
+                    computation = prev - current;
+                    break;
+                case '*':
+                    computation = prev * current;
+                    break;
+                case '/':
+                    computation = prev / current;
+                    break;
+                case '%':
+                    computation = prev % current;
+                    break;
+                default:
+                    return;
+            }
+            
+            currentOperand = computation.toString();
+            operation = null;
+            previousOperand = '';
+            resetScreen = true;
+            updateDisplay();
+        }
+
+        function clearAll() {
+            currentOperand = '0';
+            previousOperand = '';
+            operation = null;
+            updateDisplay();
+        }
+
+        function deleteLastChar() {
+            if (currentOperand.length === 1 || (currentOperand.length === 2 && currentOperand.startsWith('-'))) {
+                currentOperand = '0';
+            } else {
+                currentOperand = currentOperand.slice(0, -1);
+            }
+            updateDisplay();
+        }
+
+        function toggleSign() {
+            currentOperand = currentOperand.startsWith('-') 
+                ? currentOperand.slice(1) 
+                : '-' + currentOperand;
+            updateDisplay();
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9') appendNumber(e.key);
+            else if (e.key === '.') appendNumber('.');
+            else if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/' || e.key === '%') 
+                appendOperator(e.key);
+            else if (e.key === 'Enter' || e.key === '=') calculate();
+            else if (e.key === 'Escape') clearAll();
+            else if (e.key === 'Backspace') deleteLastChar();
+        });
+
+        // Initialize display
+        updateDisplay();
+    </script>
+</body>
+</html>

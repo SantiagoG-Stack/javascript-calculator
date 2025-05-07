@@ -1,0 +1,21 @@
+.neon-text {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0073e6, 0 0 20px #0073e6;
+}
+.neon-btn {
+    box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0073e6, 0 0 20px #0073e6;
+    transition: all 0.3s ease;
+}
+.neon-btn:hover {
+    box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #0073e6, 0 0 40px #0073e6;
+    transform: scale(1.05);
+}
+.calculator {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.display {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
